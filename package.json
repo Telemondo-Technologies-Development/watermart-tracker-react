@@ -4,12 +4,22 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+=======
+    "dev": "bunx --bun vite",
+    "build": "bunx vite build",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "lucide-react": "^0.555.0",
+    "mui": "^0.0.1",
+>>>>>>> 175c7d0054eb30ac7aae6eeed4edf19852a79882
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -25,6 +35,13 @@
     "globals": "^16.5.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
+<<<<<<< HEAD
     "vite": "^7.2.4"
+=======
+    "vite": "npm:rolldown-vite@7.2.5"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@7.2.5"
+>>>>>>> 175c7d0054eb30ac7aae6eeed4edf19852a79882
   }
 }
