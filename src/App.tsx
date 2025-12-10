@@ -7,7 +7,6 @@ import { CustomerDetailsModal } from "./components/CustomerDetailsModal"
 import { Sidebar } from "./components/Sidebar"
 import { useDatabase } from "./hook/UseDatabase"
 import type { Customer } from "./types"
-import "./App.css"
 
 export default function App() {
   const {
@@ -47,7 +46,6 @@ export default function App() {
     return () => clearInterval(interval)
   }, [getTodayTotal, getMonthlyTotal])
 
-  // Filter customers using search query
   useEffect(() => {
     const filter = async () => {
       if (!searchQuery.trim()) {
@@ -90,55 +88,61 @@ export default function App() {
     }
   }
 
-  // Loading state
   if (isLoading) {
     return (
-      <div className="app-container">
-        <div className="loading-state">
-          <div className="spinner"></div>
+      <div className="min-h-screen bg-gradient-to-br from-light-blue to-white">
+        <div className="flex flex-col items-center justify-center min-h-screen text-center">
+          <div className="spinner mb-6"></div>
           <p>Loading database...</p>
         </div>
       </div>
     )
   }
 
-  // Error state
   if (error) {
     return (
-      <div className="app-container">
-        <div className="error-state">
-          <h2>Error</h2>
+      <div className="min-h-screen bg-gradient-to-br from-light-blue to-white">
+        <div className="flex flex-col items-center justify-center min-h-screen text-center">
+          <h2 className="text-error mb-4">Error</h2>
           <p>{error}</p>
-          <button onClick={() => refreshCustomers()}>Retry</button>
+          <button 
+            onClick={() => refreshCustomers()}
+            className="btn btn-primary mt-6"
+          >
+            Retry
+          </button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="app-container">
+    <div className="min-h-screen bg-gradient-to-br from-light-blue to-white flex">
       <Sidebar isVisible={showSidebar} onClose={() => setShowSidebar(false)} />
       
-      <header className="header">
+      <header className="fixed top-0 left-0 right-0 h-20 bg-gradient-to-br from-primary-blue to-dark-blue text-white flex items-center px-8 z-50 shadow-custom">
         <button 
-          className="menu-btn" 
+          className="bg-transparent border-none text-white text-2xl cursor-pointer p-2 rounded mr-6 hover:bg-white/10 transition-colors duration-200"
           onClick={() => setShowSidebar(!showSidebar)}
           aria-label="Toggle menu"
         >
           ☰
         </button>
-        <div className="header-content">
-          <h1>Watermart Tracker</h1>
+        <div className="flex-1 flex flex-col items-end">
+          <h1 className="text-2xl mb-1 font-bold tracking-tight">Watermart Tracker</h1>
         </div>
       </header>
 
-      <main className="main-content">
-        <div className="content-wrapper">
-          <div className="left-section" aria-label="Customer List">
-            <div className="list-section">
-              <div className="section-header">
-                <h2>Customers ({customers.length})</h2>
-                <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
+      <main className="flex-1 mt-20 p-8 flex justify-center">
+        <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
+          <div className="flex flex-col">
+            <div className="bg-white rounded-xl p-8 shadow-card mt-0 flex-1 flex flex-col">
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="text-xl text-very-dark font-semibold">Customers ({customers.length})</h2>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={() => setShowAddModal(true)}
+                >
                   + Add Customer
                 </button>
               </div>
@@ -155,7 +159,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="right-section">
+          <div className="lg:sticky lg:top-28 h-fit">
             <SalesCards dailyTotal={dailyTotal} monthlyTotal={monthlyTotal} />
           </div>
         </div>
