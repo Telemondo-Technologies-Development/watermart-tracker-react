@@ -12,7 +12,7 @@ export default {
         'dark-blue': '#004499',
         'accent-cyan': '#00d4ff',
         'gray': '#e0e6ed',
-        'light-gray': '#f5f7fa', // ADD THIS LINE
+        'light-gray': '#f8fafc',
         'dark-gray': '#6c757d',
         'very-dark': '#1a1d23',
         'error': '#ef4444',

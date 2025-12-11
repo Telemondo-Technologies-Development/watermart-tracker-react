@@ -1,6 +1,33 @@
-import type React from "react"
-import { useState } from "react"
+import React, { useState } from "react"
+import { useForm } from "react-hook-form"
 import type { Customer } from "../types"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
+import { WaterDropIcon, DeliveryTruckIcon } from "@/components/ui/water-icons"
+
+type EditInfoValues = {
+  editName: string
+  editAddress: string
+}
+
+type AddOrderValues = {
+  gallons: string
+}
 
 interface CustomerDetailsModalProps {
   customer: Customer
@@ -12,166 +39,269 @@ interface CustomerDetailsModalProps {
 export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onClose }: CustomerDetailsModalProps) {
   const [showAddOrder, setShowAddOrder] = useState(false)
   const [showEditInfo, setShowEditInfo] = useState(false)
-  const [newGallons, setNewGallons] = useState("")
-  const [editName, setEditName] = useState(customer.name)
-  const [editAddress, setEditAddress] = useState(customer.address)
 
-  const handleAddOrder = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (newGallons) {
-      onAddOrder(Number.parseInt(newGallons))
-      setNewGallons("")
-      setShowAddOrder(false)
-    }
+  // Edit Customer Form
+  const editForm = useForm<EditInfoValues>({
+    defaultValues: {
+      editName: customer.name,
+      editAddress: customer.address,
+    },
+  })
+
+  // Add Order Form
+  const orderForm = useForm<AddOrderValues>({
+    defaultValues: {
+      gallons: "1", 
+    },
+  })
+
+  const handleEditSubmit = (data: EditInfoValues) => {
+    onEditCustomer(data.editName, data.editAddress)
+    setShowEditInfo(false)
   }
 
-  const handleEditInfo = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (editName && editAddress) {
-      onEditCustomer(editName, editAddress)
-      setShowEditInfo(false)
+  const handleOrderSubmit = (data: AddOrderValues) => {
+    const gallons = parseInt(data.gallons, 10)
+    if (!isNaN(gallons) && gallons >= 1) {
+      onAddOrder(gallons)
+      orderForm.reset()
+      setShowAddOrder(false)
     }
   }
 
   const totalGallons = customer.orders.reduce((sum, order) => sum + order.gallons, 0)
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[1000] flex items-center justify-center animate-fade-in" onClick={onClose}>
-      <div 
-        className="bg-white rounded-xl shadow-xl w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto animate-slide-up"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center p-6 border-b border-gray sticky top-0 bg-white">
-          <h2 className="text-xl text-very-dark font-semibold">{customer.name}</h2>
-          <button 
-            className="bg-transparent border-none text-xl text-dark-gray cursor-pointer w-8 h-8 flex items-center justify-center transition-all hover:text-primary-blue hover:scale-110"
-            onClick={onClose}
-          >
-            ✕
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-2xl p-6">
+        <DialogHeader className="mb-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <DialogTitle className="text-xl flex items-center gap-2">
+                <WaterDropIcon className="w-5 h-5" />
+                {customer.name}
+              </DialogTitle>
+              <DialogDescription>Customer Details & Order History</DialogDescription>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              aria-label="Close modal"
+              className="ml-auto p-2"
+            >
+              ✕
+            </Button>
+          </div>
+        </DialogHeader>
 
-        <div className="p-6 flex flex-col gap-6">
-          <section className="border border-gray rounded-md p-4 bg-light-blue" aria-labelledby="customer-info-heading">
-            <h3 id="customer-info-heading" className="text-lg text-primary-blue mb-4 font-semibold">Customer Information</h3>
+        <div className="space-y-6">
+          {/* Customer Information Section */}
+          <section className="border border-gray/30 rounded-lg p-5 bg-light-blue/20">
+            <h3 className="text-lg text-primary-blue mb-4 font-semibold">
+              Customer Information
+            </h3>
+            
             {!showEditInfo ? (
-              <div>
-                <p className="mb-2 text-very-dark leading-relaxed">
-                  <strong className="text-dark-blue font-semibold">Name:</strong> {customer.name}
-                </p>
-                <p className="mb-2 text-very-dark leading-relaxed">
-                  <strong className="text-dark-blue font-semibold">Address:</strong> {customer.address}
-                </p>
-                <p className="mb-4 text-very-dark leading-relaxed">
-                  <strong className="text-dark-blue font-semibold">Total Gallons Ordered:</strong> {totalGallons}
-                </p>
-                <button 
-                  className="btn btn-secondary"
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-semibold text-dark-blue mb-1">Name</p>
+                  <p className="text-very-dark">{customer.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-dark-blue mb-1">Address</p>
+                  <p className="text-very-dark">{customer.address}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-dark-blue mb-1">Total Gallons Ordered</p>
+                  <p className="text-2xl font-bold text-accent-cyan">{totalGallons} gallons</p>
+                </div>
+                <Button 
+                  variant="outline"
                   onClick={() => setShowEditInfo(true)}
+                  className="mt-4"
                 >
                   Edit Information
-                </button>
+                </Button>
               </div>
             ) : (
-              <form onSubmit={handleEditInfo} className="space-y-4">
-                <div>
-                  <label htmlFor="edit-name" className="block font-semibold mb-2 text-very-dark text-sm">Name</label>
-                  <input
-                    id="edit-name"
-                    type="text"
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    required
-                    className="w-full px-3 py-2 border border-gray rounded-md focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20"
+              <Form {...editForm}>
+                <form onSubmit={editForm.handleSubmit(handleEditSubmit)} className="space-y-4">
+                  <FormField
+                    control={editForm.control}
+                    name="editName"
+                    rules={{
+                      required: "Name is required",
+                      minLength: {
+                        value: 2,
+                        message: "Name must be at least 2 characters",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter customer name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div>
-                  <label htmlFor="edit-address" className="block font-semibold mb-2 text-very-dark text-sm">Address</label>
-                  <input
-                    id="edit-address"
-                    type="text"
-                    value={editAddress}
-                    onChange={(e) => setEditAddress(e.target.value)}
-                    required
-                    className="w-full px-3 py-2 border border-gray rounded-md focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20"
+                  <FormField
+                    control={editForm.control}
+                    name="editAddress"
+                    rules={{
+                      required: "Address is required",
+                      minLength: {
+                        value: 5,
+                        message: "Address must be at least 5 characters",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Address</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter customer address"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div className="flex gap-4 justify-end">
-                  <button 
-                    type="button" 
-                    className="btn btn-secondary"
-                    onClick={() => setShowEditInfo(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Save Changes
-                  </button>
-                </div>
-              </form>
+                  <div className="flex gap-3 justify-end">
+                    <Button 
+                      type="button" 
+                      variant="secondary"
+                      onClick={() => setShowEditInfo(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit">
+                      Save Changes
+                    </Button>
+                  </div>
+                </form>
+              </Form>
             )}
           </section>
 
-          <div className="border border-gray rounded-md p-4 bg-light-blue">
-            <h3 className="text-lg text-primary-blue mb-4 font-semibold">Order History</h3>
+          {/* Order History Section */}
+          <section className="border border-gray/30 rounded-lg p-5">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg text-primary-blue font-semibold flex items-center gap-2">
+                <DeliveryTruckIcon className="w-5 h-5" />
+                Order History
+              </h3>
+              {!showAddOrder && (
+                <Button 
+                  variant="accent"
+                  onClick={() => setShowAddOrder(true)}
+                  leftIcon={<span>+</span>}
+                >
+                  New Order
+                </Button>
+              )}
+            </div>
+
+            {showAddOrder ? (
+              <div className="mb-6">
+                <Form {...orderForm}>
+                  <form onSubmit={orderForm.handleSubmit(handleOrderSubmit)} className="space-y-4">
+                    <FormField
+                      control={orderForm.control}
+                      name="gallons"
+                      rules={{
+                        required: "Gallons is required",
+                        validate: (value) => {
+                          const num = parseInt(value, 10)
+                          if (isNaN(num)) return "Must be a valid number"
+                          if (num < 1) return "Gallons must be at least 1"
+                          if (!Number.isInteger(num)) return "Must be a whole number"
+                          return true
+                        },
+                      }}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Order Quantity (Gallons)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number"
+                              min="1"
+                              placeholder="Enter gallons"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex gap-3 justify-end">
+                      <Button 
+                        type="button" 
+                        variant="secondary"
+                        onClick={() => setShowAddOrder(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit" variant="primary">
+                        Add Order
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </div>
+            ) : null}
+
             {customer.orders.length > 0 ? (
-              <div className="flex flex-col gap-2">
+              <div className="space-y-3">
                 {customer.orders.map((order) => (
-                  <div key={order.id} className="flex justify-between items-center px-4 py-2 bg-white rounded-md border-l-3 border-accent-cyan">
-                    <span className="text-sm text-dark-gray font-medium">
-                      {new Date(order.date).toLocaleDateString()}
-                    </span>
-                    <span className="text-base font-bold text-accent-cyan">
-                      {order.gallons} gallons
-                    </span>
+                  <div 
+                    key={order.id} 
+                    className="flex justify-between items-center p-4 bg-white rounded-lg border border-gray/30 hover:border-primary-blue/30 transition-colors"
+                  >
+                    <div>
+                      <p className="font-medium text-very-dark">
+                        {new Date(order.date).toLocaleDateString('en-US', {
+                          weekday: 'short',
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </p>
+                      <p className="text-sm text-dark-gray">
+                        {new Date(order.date).toLocaleTimeString('en-US', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-accent-cyan">
+                        {order.gallons} gallons
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-very-dark">No orders yet</p>
+              <div className="text-center py-8">
+                <p className="text-dark-gray mb-3">No orders yet</p>
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowAddOrder(true)}
+                >
+                  Add First Order
+                </Button>
+              </div>
             )}
-          </div>
-
-          <div className="flex gap-4 justify-end mt-6 pt-6 border-t border-gray">
-            {!showAddOrder ? (
-              <button 
-                className="btn btn-primary"
-                onClick={() => setShowAddOrder(true)}
-              >
-                Add New Order
-              </button>
-            ) : (
-              <form onSubmit={handleAddOrder} className="w-full space-y-4">
-                <div>
-                  <label htmlFor="new-gallons" className="block font-semibold mb-2 text-very-dark text-sm">Order Quantity (Gallons)</label>
-                  <input
-                    id="new-gallons"
-                    type="number"
-                    min="1"
-                    value={newGallons}
-                    onChange={(e) => setNewGallons(e.target.value)}
-                    placeholder="Enter gallons"
-                    required
-                    className="w-full px-3 py-2 border border-gray rounded-md focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20"
-                  />
-                </div>
-                <div className="flex gap-4 justify-end">
-                  <button 
-                    type="button" 
-                    className="btn btn-secondary"
-                    onClick={() => setShowAddOrder(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Add Order
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
+          </section>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }

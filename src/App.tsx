@@ -7,6 +7,10 @@ import { CustomerDetailsModal } from "./components/CustomerDetailsModal"
 import { Sidebar } from "./components/Sidebar"
 import { useDatabase } from "./hook/UseDatabase"
 import type { Customer } from "./types"
+import { Button } from "@/components/ui/button"
+import { AddCustomerIcon, MenuIcon, RefreshIcon } from "@/components/ui/water-icons"
+import { CustomerFilters } from "./components/CustomerFilters"
+import { Droplets } from 'lucide-react';
 
 export default function App() {
   const {
@@ -89,15 +93,19 @@ export default function App() {
   }
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-light-blue to-white">
-        <div className="flex flex-col items-center justify-center min-h-screen text-center">
-          <div className="spinner mb-6"></div>
-          <p>Loading database...</p>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-light-blue to-white">
+      <div className="flex flex-col items-center justify-center min-h-screen text-center">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-light-blue/30 rounded-full"></div>
+          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary-blue border-t-transparent rounded-full animate-spin"></div>
+          <Droplets className="h-8 w-8 text-primary-blue" />
         </div>
+        <p className="mt-4 text-dark-gray">Loading Watermart Tracker...</p>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
   if (error) {
     return (
@@ -105,12 +113,14 @@ export default function App() {
         <div className="flex flex-col items-center justify-center min-h-screen text-center">
           <h2 className="text-error mb-4">Error</h2>
           <p>{error}</p>
-          <button 
+          <Button 
             onClick={() => refreshCustomers()}
-            className="btn btn-primary mt-6"
+            variant="primary"
+            className="mt-6"
+            leftIcon={<RefreshIcon className="w-4 h-4" />}
           >
             Retry
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -121,13 +131,14 @@ export default function App() {
       <Sidebar isVisible={showSidebar} onClose={() => setShowSidebar(false)} />
       
       <header className="fixed top-0 left-0 right-0 h-20 bg-gradient-to-br from-primary-blue to-dark-blue text-white flex items-center px-8 z-50 shadow-custom">
-        <button 
-          className="bg-transparent border-none text-white text-2xl cursor-pointer p-2 rounded mr-6 hover:bg-white/10 transition-colors duration-200"
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-white hover:bg-white/10 text-2xl mr-6"
           onClick={() => setShowSidebar(!showSidebar)}
           aria-label="Toggle menu"
-        >
-          ☰
-        </button>
+          leftIcon={<MenuIcon className="w-6 h-6" />}
+        />
         <div className="flex-1 flex flex-col items-end">
           <h1 className="text-2xl mb-1 font-bold tracking-tight">Watermart Tracker</h1>
         </div>
@@ -139,15 +150,21 @@ export default function App() {
             <div className="bg-white rounded-xl p-8 shadow-card mt-0 flex-1 flex flex-col">
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-xl text-very-dark font-semibold">Customers ({customers.length})</h2>
-                <button 
-                  className="btn btn-primary" 
+                <Button 
+                  variant="water" 
+                  size="lg"
+                  leftIcon={<AddCustomerIcon className="w-5 h-5" />}
                   onClick={() => setShowAddModal(true)}
                 >
-                  + Add Customer
-                </button>
+                  Add Customer
+                </Button>
               </div>
 
-              <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+              <SearchBar 
+                  searchQuery={searchQuery} 
+                  setSearchQuery={setSearchQuery}
+                  resultCount={filteredCustomers.length}
+              />
 
               <CustomerList
                 customers={filteredCustomers}

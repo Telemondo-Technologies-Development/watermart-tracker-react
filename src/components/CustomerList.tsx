@@ -1,4 +1,6 @@
 import type { Customer } from "../types"
+import { Button } from "@/components/ui/button"
+import { WaterDropIcon } from "@/components/ui/water-icons"
 
 interface CustomerListProps {
   customers: Customer[]
@@ -8,38 +10,62 @@ interface CustomerListProps {
 export function CustomerList({ customers, onSelectCustomer }: CustomerListProps) {
   if (customers.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[300px] text-center p-8 bg-light-blue rounded-xl text-dark-gray">
-        <p>No customers found. Add your first customer to get started!</p>
+      <div className="text-center py-12">
+        <WaterDropIcon className="w-12 h-12 text-gray mx-auto mb-4" />
+        <p className="text-dark-gray mb-4">No customers found</p>
+        <p className="text-sm text-dark-gray/60">Add your first customer to get started</p>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-4 flex-1">
-      {customers.map((customer) => (
-        <li
-          key={customer.id}
-          className="flex justify-between items-center p-4 bg-white rounded-xl border-2 border-transparent cursor-pointer transition-all duration-200 shadow-sm hover:border-primary-blue hover:bg-light-blue hover:shadow-custom-hover hover:translate-x-1"
-          onClick={() => onSelectCustomer(customer)}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") onSelectCustomer(customer)
-          }}
-        >
-          <div className="flex-1">
-            <h4 className="text-lg mb-1 text-very-dark font-semibold">{customer.name}</h4>
-            <p className="text-sm text-dark-gray mb-1">{customer.address}</p>
-            <p className="text-xs text-dark-gray">Total No. Orders: {customer.orders.length}</p>
+    <div className="space-y-3">
+      {customers.map((customer) => {
+        const totalGallons = customer.orders.reduce((sum, order) => sum + order.gallons, 0)
+        
+        return (
+          <div
+            key={customer.id}
+            className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray/30 hover:border-primary-blue/30 hover:shadow-sm transition-all duration-200 cursor-pointer group"
+            onClick={() => onSelectCustomer(customer)}
+          >
+            <div className="flex-1">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-light-blue/30 rounded-lg">
+                  <WaterDropIcon className="w-4 h-4 text-primary-blue" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-very-dark group-hover:text-primary-blue transition-colors">
+                    {customer.name}
+                  </h3>
+                  <p className="text-sm text-dark-gray truncate max-w-md">
+                    {customer.address}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm font-semibold text-primary-blue">
+                  {totalGallons} gallons
+                </p>
+                <p className="text-xs text-dark-gray">
+                  {customer.orders.length} order{customer.orders.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="View details"
+              >
+                →
+              </Button>
+            </div>
           </div>
-          <div className="pl-6 text-right">
-            <p className="text-2xl font-bold text-accent-cyan leading-none mb-1">
-              {customer.orders.reduce((sum, order) => sum + order.gallons, 0)}
-            </p>
-            <span className="text-xs text-dark-gray font-medium">Gallons Ordered (Total)</span>
-          </div>
-        </li>
-      ))}
+        )
+      })}
     </div>
   )
 }
