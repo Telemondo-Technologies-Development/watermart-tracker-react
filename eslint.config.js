@@ -13,8 +13,24 @@ export default defineConfig([
       js.configs.recommended,
       tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
     ],
+    plugins: {
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      'react-refresh/only-export-components': [
+        'warn',  
+        { allowConstantExport: true } 
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          'varsIgnorePattern': '^React$',
+          'argsIgnorePattern': '^_',
+          'ignoreRestSiblings': true
+        }
+      ]
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
