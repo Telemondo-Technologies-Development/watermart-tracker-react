@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
-import React from "react"
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -16,15 +17,28 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog"
 import { WaterDropIcon } from "@/components/ui/water-icons"
 
-type FormValues = {
-  name: string
-  address: string
-  gallons: string 
-}
+const addCustomerSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters"),
+  address: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(200, "Address must be less than 200 characters"),
+  gallons: z
+    .string()
+    .min(1, "Number of gallons is required")
+    .refine((val) => {
+      const num = Number(val);
+      return !isNaN(num) && num >= 1 && Number.isInteger(num);
+    }, "Must be a whole number of at least 1"),
+})
+
+type FormValues = z.infer<typeof addCustomerSchema>
 
 interface AddCustomerModalProps {
   onAdd: (name: string, address: string, gallons: number) => void
@@ -34,27 +48,26 @@ interface AddCustomerModalProps {
 
 export function AddCustomerModal({ onAdd, onClose, isOpen = true }: AddCustomerModalProps) {
   const form = useForm<FormValues>({
+  resolver: zodResolver(addCustomerSchema),
     defaultValues: {
-      name: "",
-      address: "",
-      gallons: "1",
-    },
-  })
+    name: "",
+    address: "",
+    gallons: "1",
+  },
+})
 
   const handleSubmit = (values: FormValues) => {
-    const gallons = parseInt(values.gallons, 10)
-    if (!isNaN(gallons) && gallons >= 1) {
-      onAdd(values.name, values.address, gallons)
-      form.reset()
-      onClose()
-    }
-  }
+  const gallons = parseInt(values.gallons, 10)
+  onAdd(values.name, values.address, gallons)
+  form.reset()
+  onClose()
+}
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="p-5">
         <DialogHeader className="mb-4 flex-row items-start">
-          < div className="flex-1">
+          <div className="flex-1">
               <DialogTitle className="flex items-center gap-2 text-lg">
                 <WaterDropIcon className="w-4 h-4" />
                 Add New Customer
@@ -76,13 +89,6 @@ export function AddCustomerModal({ onAdd, onClose, isOpen = true }: AddCustomerM
             <FormField
               control={form.control}
               name="name"
-              rules={{
-                required: "Name is required",
-                minLength: {
-                  value: 2,
-                  message: "Name must be at least 2 characters",
-                },
-              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Customer Name</FormLabel>
@@ -101,13 +107,6 @@ export function AddCustomerModal({ onAdd, onClose, isOpen = true }: AddCustomerM
             <FormField
               control={form.control}
               name="address"
-              rules={{
-                required: "Address is required",
-                minLength: {
-                  value: 5,
-                  message: "Address must be at least 5 characters",
-                },
-              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Address</FormLabel>
@@ -124,19 +123,9 @@ export function AddCustomerModal({ onAdd, onClose, isOpen = true }: AddCustomerM
             />
             
             <FormField
-              control={form.control}
-              name="gallons"
-              rules={{
-                required: "Gallons is required",
-                validate: (value) => {
-                  const num = parseInt(value, 10)
-                  if (isNaN(num)) return "Must be a valid number"
-                  if (num < 1) return "Gallons must be at least 1"
-                  if (!Number.isInteger(num)) return "Must be a whole number"
-                  return true
-                },
-              }}
-              render={({ field }) => (
+                control={form.control}
+                name="gallons"
+                render={({ field }) => (
                 <FormItem>
                   <FormLabel>Initial Order (Gallons)</FormLabel>
                   <FormControl>

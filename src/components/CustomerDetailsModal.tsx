@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import type { Customer } from "../types"
 import { X } from 'lucide-react'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -21,14 +23,28 @@ import {
 } from "@/components/ui/dialog"
 import { WaterDropIcon, DeliveryTruckIcon } from "@/components/ui/water-icons"
 
-type EditInfoValues = {
-  editName: string
-  editAddress: string
-}
+const editCustomerSchema = z.object({
+  editName: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters"),
+  editAddress: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(200, "Address must be less than 200 characters"),
+})
 
-type AddOrderValues = {
-  gallons: string
-}
+const addOrderSchema = z.object({
+  gallons: z
+    .string()
+    .min(1, "Gallons is required")
+    .refine((val) => !isNaN(Number(val)), "Must be a valid number")
+    .refine((val) => Number(val) >= 1, "Gallons must be at least 1")
+    .refine((val) => Number.isInteger(Number(val)), "Must be a whole number"),
+})
+
+type EditInfoValues = z.infer<typeof editCustomerSchema>
+type AddOrderValues = z.infer<typeof addOrderSchema>
 
 interface CustomerDetailsModalProps {
   customer: Customer
@@ -43,16 +59,18 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
 
   // Edit Customer Form
   const editForm = useForm<EditInfoValues>({
-    defaultValues: {
-      editName: customer.name,
-      editAddress: customer.address,
+  resolver: zodResolver(editCustomerSchema),
+  defaultValues: {
+    editName: customer.name,
+    editAddress: customer.address,
     },
   })
 
   // Add Order Form
   const orderForm = useForm<AddOrderValues>({
-    defaultValues: {
-      gallons: "1", 
+  resolver: zodResolver(addOrderSchema),
+  defaultValues: {
+    gallons: "1", 
     },
   })
 
@@ -129,13 +147,6 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
                   <FormField
                     control={editForm.control}
                     name="editName"
-                    rules={{
-                      required: "Name is required",
-                      minLength: {
-                        value: 2,
-                        message: "Name must be at least 2 characters",
-                      },
-                    }}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Name</FormLabel>
@@ -152,13 +163,6 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
                   <FormField
                     control={editForm.control}
                     name="editAddress"
-                    rules={{
-                      required: "Address is required",
-                      minLength: {
-                        value: 5,
-                        message: "Address must be at least 5 characters",
-                      },
-                    }}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Address</FormLabel>
@@ -214,16 +218,6 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
                     <FormField
                       control={orderForm.control}
                       name="gallons"
-                      rules={{
-                        required: "Gallons is required",
-                        validate: (value) => {
-                          const num = parseInt(value, 10)
-                          if (isNaN(num)) return "Must be a valid number"
-                          if (num < 1) return "Gallons must be at least 1"
-                          if (!Number.isInteger(num)) return "Must be a whole number"
-                          return true
-                        },
-                      }}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Order Quantity (Gallons)</FormLabel>
