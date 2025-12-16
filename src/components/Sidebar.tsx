@@ -1,3 +1,4 @@
+import { Home, BarChart3, Settings } from 'lucide-react'
 interface SidebarProps {
   isVisible: boolean
   onClose: () => void
@@ -24,18 +25,18 @@ export function Sidebar({ isVisible, onClose }: SidebarProps) {
           </button>
         </div>
         <nav className="p-2 flex flex-col gap-1 flex-1">
-          <button className="flex items-center gap-4 p-4 bg-transparent border-none cursor-pointer transition-all text-dark-gray text-base text-left w-full border-l-3 border-primary-blue hover:bg-light-blue hover:text-primary-blue bg-light-blue text-primary-blue font-semibold">
-            <span className="text-2xl">🏠</span>
+          <button className="flex items-center gap-3 p-4 bg-transparent border-none cursor-pointer transition-all text-dark-gray text-base text-left w-full border-l-4 border-primary-blue hover:bg-light-blue hover:text-primary-blue bg-light-blue text-primary-blue font-semibold rounded-r-lg">
+            <Home className="w-5 h-5" />
             <span>Home</span>
           </button>
-          
-          <button className="flex items-center gap-4 p-4 bg-transparent border-none cursor-pointer transition-all text-dark-gray text-base text-left w-full border-l-3 border-transparent hover:bg-light-blue hover:text-primary-blue">
-            <span className="text-2xl">📊</span>
+  
+          <button className="flex items-center gap-3 p-4 bg-transparent border-none cursor-pointer transition-all text-dark-gray text-base text-left w-full border-l-4 border-transparent hover:bg-light-blue hover:text-primary-blue rounded-r-lg">
+            <BarChart3 className="w-5 h-5" />
             <span>Sales Report</span>
           </button>
-          
-          <button className="flex items-center gap-4 p-4 bg-transparent border-none cursor-pointer transition-all text-dark-gray text-base text-left w-full border-l-3 border-transparent hover:bg-light-blue hover:text-primary-blue">
-            <span className="text-2xl">⚙️</span>
+  
+          <button className="flex items-center gap-3 p-4 bg-transparent border-none cursor-pointer transition-all text-dark-gray text-base text-left w-full border-l-4 border-transparent hover:bg-light-blue hover:text-primary-blue rounded-r-lg">
+            <Settings className="w-5 h-5" />
             <span>Settings</span>
           </button>
         </nav>

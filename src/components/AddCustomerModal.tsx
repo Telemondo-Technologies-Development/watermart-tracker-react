@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import React from "react"
 import { useForm } from "react-hook-form"
 import {
@@ -36,7 +37,7 @@ export function AddCustomerModal({ onAdd, onClose, isOpen = true }: AddCustomerM
     defaultValues: {
       name: "",
       address: "",
-      gallons: "5",
+      gallons: "1",
     },
   })
 
@@ -51,32 +52,27 @@ export function AddCustomerModal({ onAdd, onClose, isOpen = true }: AddCustomerM
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="p-6">
-        <DialogHeader className="mb-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <DialogTitle className="flex items-center gap-2">
-                <WaterDropIcon className="w-5 h-5" />
+      <DialogContent className="p-5">
+        <DialogHeader className="mb-4 flex-row items-start">
+          < div className="flex-1">
+              <DialogTitle className="flex items-center gap-2 text-lg">
+                <WaterDropIcon className="w-4 h-4" />
                 Add New Customer
               </DialogTitle>
-              <DialogDescription>
-                Add a new customer to the Watermart Tracker system.
-              </DialogDescription>
             </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={onClose}
               aria-label="Close modal"
-              className="ml-auto p-2"
+              className="p-1 hover:bg-gray/20 -mt-1"
             >
-              ✕
+              <X className="w-5 h-5" />
             </Button>
-          </div>
         </DialogHeader>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-3">
             <FormField
               control={form.control}
               name="name"
@@ -156,7 +152,7 @@ export function AddCustomerModal({ onAdd, onClose, isOpen = true }: AddCustomerM
               )}
             />
             
-            <div className="flex gap-4 justify-end pt-4">
+            <div className="flex gap-4 justify-end pt-3">
               <Button 
                 type="button" 
                 variant="secondary" 

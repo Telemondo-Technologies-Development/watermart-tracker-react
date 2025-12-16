@@ -1,7 +1,7 @@
 import type { Customer } from "../types"
 import { Button } from "@/components/ui/button"
 import { WaterDropIcon } from "@/components/ui/water-icons"
-
+import { ChevronRight } from 'lucide-react'
 interface CustomerListProps {
   customers: Customer[]
   onSelectCustomer: (customer: Customer) => void
@@ -60,7 +60,7 @@ export function CustomerList({ customers, onSelectCustomer }: CustomerListProps)
                 className="opacity-0 group-hover:opacity-100 transition-opacity"
                 aria-label="View details"
               >
-                →
+                <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
           </div>

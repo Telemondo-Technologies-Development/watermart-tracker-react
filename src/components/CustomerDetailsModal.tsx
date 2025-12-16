@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import type { Customer } from "../types"
+import { X } from 'lucide-react'
 import {
   Form,
   FormControl,
@@ -73,29 +74,27 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl p-6">
-        <DialogHeader className="mb-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <DialogTitle className="text-xl flex items-center gap-2">
-                <WaterDropIcon className="w-5 h-5" />
-                {customer.name}
-              </DialogTitle>
-              <DialogDescription>Customer Details & Order History</DialogDescription>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              aria-label="Close modal"
-              className="ml-auto p-2"
-            >
-              ✕
-            </Button>
+      <DialogContent className="sm:max-w-2xl p-5">
+        <DialogHeader className="mb-4 flex-row items-start">
+          <div className="flex-1">
+            <DialogTitle className="text-lg flex items-center gap-2">
+              <WaterDropIcon className="w-4 h-4" />
+              {customer.name}
+            </DialogTitle>
+            <DialogDescription>Customer Details & Order History</DialogDescription>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="p-1 hover:bg-gray/20 -mt-1"
+          >
+            <X className="w-5 h-5" />
+          </Button>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Customer Information Section */}
           <section className="border border-gray/30 rounded-lg p-5 bg-light-blue/20">
             <h3 className="text-lg text-primary-blue mb-4 font-semibold">
@@ -117,7 +116,7 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
                   <p className="text-2xl font-bold text-accent-cyan">{totalGallons} gallons</p>
                 </div>
                 <Button 
-                  variant="outline"
+                  variant="accent"
                   onClick={() => setShowEditInfo(true)}
                   className="mt-4"
                 >
@@ -126,7 +125,7 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
               </div>
             ) : (
               <Form {...editForm}>
-                <form onSubmit={editForm.handleSubmit(handleEditSubmit)} className="space-y-4">
+                <form onSubmit={editForm.handleSubmit(handleEditSubmit)} className="space-y-3">
                   <FormField
                     control={editForm.control}
                     name="editName"
@@ -211,7 +210,7 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
             {showAddOrder ? (
               <div className="mb-6">
                 <Form {...orderForm}>
-                  <form onSubmit={orderForm.handleSubmit(handleOrderSubmit)} className="space-y-4">
+                  <form onSubmit={orderForm.handleSubmit(handleOrderSubmit)} className="space-y-3">
                     <FormField
                       control={orderForm.control}
                       name="gallons"
