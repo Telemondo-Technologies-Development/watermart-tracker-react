@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { FilterIcon } from "@/components/ui/water-icons"
-
+import { X } from 'lucide-react'
 interface SearchBarProps {
   searchQuery: string
   setSearchQuery: (query: string) => void
@@ -42,7 +42,7 @@ export function SearchBar({ searchQuery, setSearchQuery, resultCount }: SearchBa
             onClick={() => setSearchQuery("")}
             aria-label="Clear search"
           >
-            ✕
+            <X className="w-4 h-4" />
           </Button>
         )}
       </div>

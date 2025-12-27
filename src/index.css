@@ -1,6 +1,44 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Custom Colors */
+  --color-primary-blue: #0066cc;
+  --color-light-blue: #e6f0ff;
+  --color-dark-blue: #004499;
+  --color-accent-cyan: #00d4ff;
+  --color-gray: #e0e6ed;
+  --color-light-gray: #f8fafc;
+  --color-dark-gray: #6c757d;
+  --color-very-dark: #1a1d23;
+  --color-error: #ef4444;
+  --color-success: #10b981;
+
+  /* Custom Animations */
+  --animate-fade-in: fade-in 0.2s ease;
+  --animate-slide-in: slide-in 0.3s ease;
+  --animate-slide-up: slide-up 0.3s ease;
+
+  /* Custom Box Shadows */
+  --shadow-custom: 0 2px 8px rgba(0, 102, 204, 0.15);
+  --shadow-custom-hover: 0 4px 12px rgba(0, 102, 204, 0.2);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 8px 20px rgba(0, 102, 204, 0.15);
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slide-in {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes slide-up {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
 
 @layer base {
   * {

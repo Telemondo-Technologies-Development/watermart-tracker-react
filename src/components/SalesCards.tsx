@@ -7,6 +7,19 @@ interface SalesCardsProps {
 }
 
 export function SalesCards({ dailyTotal, monthlyTotal }: SalesCardsProps) {
+  // get date and month for sales cards
+  const today = new Date()
+  const currentDate = today.toLocaleDateString('en-US', { 
+    weekday: 'short',
+    month: 'short', 
+    day: 'numeric',
+    year: 'numeric'
+  })
+  const currentMonth = today.toLocaleDateString('en-US', { 
+    month: 'long', 
+    year: 'numeric' 
+  })
+
   return (
     <div className="flex flex-col gap-6 w-full">
       <Card className="border-l-4 border-primary-blue hover:border-primary-blue/80">
@@ -15,7 +28,10 @@ export function SalesCards({ dailyTotal, monthlyTotal }: SalesCardsProps) {
             <div className="p-2 bg-light-blue/30 rounded-lg">
               <WaterBottleIcon className="w-5 h-5 text-primary-blue" />
             </div>
-            <CardTitle>Today's Sales</CardTitle>
+            <div className="flex-1">
+              <CardTitle>Today's Sales</CardTitle>
+              <p className="text-xs text-dark-gray mt-1">{currentDate}</p>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -38,7 +54,10 @@ export function SalesCards({ dailyTotal, monthlyTotal }: SalesCardsProps) {
             <div className="p-2 bg-accent-cyan/20 rounded-lg">
               <TrendingUpIcon className="w-5 h-5 text-accent-cyan" />
             </div>
-            <CardTitle>Monthly Sales</CardTitle>
+            <div className="flex-1">
+              <CardTitle>Monthly Sales</CardTitle>
+              <p className="text-xs text-dark-gray mt-1">{currentMonth}</p>
+            </div>
           </div>
         </CardHeader>
         <CardContent>

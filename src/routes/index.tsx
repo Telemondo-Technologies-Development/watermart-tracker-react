@@ -1,18 +1,22 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from "react"
-import { SalesCards } from "./components/SalesCards"
-import { SearchBar } from "./components/SearchBar"
-import { CustomerList } from "./components/CustomerList"
-import { AddCustomerModal } from "./components/AddCustomerModal"
-import { CustomerDetailsModal } from "./components/CustomerDetailsModal"
-import { Sidebar } from "./components/Sidebar"
-import { useDatabase } from "./hook/UseDatabase"
-import type { Customer } from "./types"
+import { SalesCards } from "@/components/SalesCards"
+import { SearchBar } from "@/components/SearchBar"
+import { CustomerList } from "@/components/CustomerList"
+import { AddCustomerModal } from "@/components/AddCustomerModal"
+import { CustomerDetailsModal } from "@/components/CustomerDetailsModal"
+import { Sidebar } from "@/components/Sidebar"
+import { useDatabase } from "@/hook/UseDatabase"
+import type { Customer } from "@/types"
 import { Button } from "@/components/ui/button"
 import { AddCustomerIcon, MenuIcon, RefreshIcon } from "@/components/ui/water-icons"
-import { CustomerFilters } from "./components/CustomerFilters"
-import { Droplets } from 'lucide-react';
+import { Droplets } from 'lucide-react'
 
-export default function App() {
+export const Route = createFileRoute('/')({
+  component: HomePage,
+})
+
+function HomePage() {
   const {
     customers,
     isLoading,
@@ -93,19 +97,19 @@ export default function App() {
   }
 
   if (isLoading) {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-light-blue to-white">
-      <div className="flex flex-col items-center justify-center min-h-screen text-center">
-        <div className="relative">
-          <div className="w-16 h-16 border-4 border-light-blue/30 rounded-full"></div>
-          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary-blue border-t-transparent rounded-full animate-spin"></div>
-          <Droplets className="h-8 w-8 text-primary-blue" />
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-light-blue to-white">
+        <div className="flex flex-col items-center justify-center min-h-screen text-center">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-light-blue/30 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary-blue border-t-transparent rounded-full animate-spin"></div>
+            <Droplets className="h-8 w-8 text-primary-blue" />
+          </div>
+          <p className="mt-4 text-dark-gray">Loading Watermart Tracker...</p>
         </div>
-        <p className="mt-4 text-dark-gray">Loading Watermart Tracker...</p>
       </div>
-    </div>
-  )
-}
+    )
+  }
 
   if (error) {
     return (
@@ -161,9 +165,9 @@ export default function App() {
               </div>
 
               <SearchBar 
-                  searchQuery={searchQuery} 
-                  setSearchQuery={setSearchQuery}
-                  resultCount={filteredCustomers.length}
+                searchQuery={searchQuery} 
+                setSearchQuery={setSearchQuery}
+                resultCount={filteredCustomers.length}
               />
 
               <CustomerList

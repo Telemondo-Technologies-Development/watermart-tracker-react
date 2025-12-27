@@ -32,7 +32,7 @@ const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         "fixed left-[50%] top-[50%] z-[1000] w-[90%] max-w-lg translate-x-[-50%] translate-y-[-50%]",
-        "bg-white rounded-xl shadow-xl max-h-[90vh] overflow-y-auto animate-slide-up",
+        "bg-white rounded-xl shadow-xl max-h-[90vh] overflow-y-auto animate-slide-up p-5",
         className
       )}
       {...props}
@@ -49,7 +49,7 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex justify-between items-center p-6 border-b border-gray sticky top-0 bg-white",
+      "flex justify-between items-center p-1 border-b border-gray sticky top-0 bg-white",
       className
     )}
     {...props}

@@ -1,6 +1,9 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import type { Customer } from "../types"
+import { X } from 'lucide-react'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -20,14 +23,28 @@ import {
 } from "@/components/ui/dialog"
 import { WaterDropIcon, DeliveryTruckIcon } from "@/components/ui/water-icons"
 
-type EditInfoValues = {
-  editName: string
-  editAddress: string
-}
+const editCustomerSchema = z.object({
+  editName: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters"),
+  editAddress: z
+    .string()
+    .min(5, "Address must be at least 5 characters")
+    .max(200, "Address must be less than 200 characters"),
+})
 
-type AddOrderValues = {
-  gallons: string
-}
+const addOrderSchema = z.object({
+  gallons: z
+    .string()
+    .min(1, "Gallons is required")
+    .refine((val) => !isNaN(Number(val)), "Must be a valid number")
+    .refine((val) => Number(val) >= 1, "Gallons must be at least 1")
+    .refine((val) => Number.isInteger(Number(val)), "Must be a whole number"),
+})
+
+type EditInfoValues = z.infer<typeof editCustomerSchema>
+type AddOrderValues = z.infer<typeof addOrderSchema>
 
 interface CustomerDetailsModalProps {
   customer: Customer
@@ -42,16 +59,18 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
 
   // Edit Customer Form
   const editForm = useForm<EditInfoValues>({
-    defaultValues: {
-      editName: customer.name,
-      editAddress: customer.address,
+  resolver: zodResolver(editCustomerSchema),
+  defaultValues: {
+    editName: customer.name,
+    editAddress: customer.address,
     },
   })
 
   // Add Order Form
   const orderForm = useForm<AddOrderValues>({
-    defaultValues: {
-      gallons: "1", 
+  resolver: zodResolver(addOrderSchema),
+  defaultValues: {
+    gallons: "1", 
     },
   })
 
@@ -73,29 +92,27 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl p-6">
-        <DialogHeader className="mb-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <DialogTitle className="text-xl flex items-center gap-2">
-                <WaterDropIcon className="w-5 h-5" />
-                {customer.name}
-              </DialogTitle>
-              <DialogDescription>Customer Details & Order History</DialogDescription>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              aria-label="Close modal"
-              className="ml-auto p-2"
-            >
-              ✕
-            </Button>
+      <DialogContent className="sm:max-w-2xl p-5">
+        <DialogHeader className="mb-4 flex-row items-start">
+          <div className="flex-1">
+            <DialogTitle className="text-lg flex items-center gap-2">
+              <WaterDropIcon className="w-4 h-4" />
+              {customer.name}
+            </DialogTitle>
+            <DialogDescription>Customer Details & Order History</DialogDescription>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            aria-label="Close modal"
+            className="p-1 hover:bg-gray/20 -mt-1"
+          >
+            <X className="w-5 h-5" />
+          </Button>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Customer Information Section */}
           <section className="border border-gray/30 rounded-lg p-5 bg-light-blue/20">
             <h3 className="text-lg text-primary-blue mb-4 font-semibold">
@@ -117,7 +134,7 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
                   <p className="text-2xl font-bold text-accent-cyan">{totalGallons} gallons</p>
                 </div>
                 <Button 
-                  variant="outline"
+                  variant="accent"
                   onClick={() => setShowEditInfo(true)}
                   className="mt-4"
                 >
@@ -126,17 +143,10 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
               </div>
             ) : (
               <Form {...editForm}>
-                <form onSubmit={editForm.handleSubmit(handleEditSubmit)} className="space-y-4">
+                <form onSubmit={editForm.handleSubmit(handleEditSubmit)} className="space-y-3">
                   <FormField
                     control={editForm.control}
                     name="editName"
-                    rules={{
-                      required: "Name is required",
-                      minLength: {
-                        value: 2,
-                        message: "Name must be at least 2 characters",
-                      },
-                    }}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Name</FormLabel>
@@ -153,13 +163,6 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
                   <FormField
                     control={editForm.control}
                     name="editAddress"
-                    rules={{
-                      required: "Address is required",
-                      minLength: {
-                        value: 5,
-                        message: "Address must be at least 5 characters",
-                      },
-                    }}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Address</FormLabel>
@@ -211,20 +214,10 @@ export function CustomerDetailsModal({ customer, onAddOrder, onEditCustomer, onC
             {showAddOrder ? (
               <div className="mb-6">
                 <Form {...orderForm}>
-                  <form onSubmit={orderForm.handleSubmit(handleOrderSubmit)} className="space-y-4">
+                  <form onSubmit={orderForm.handleSubmit(handleOrderSubmit)} className="space-y-3">
                     <FormField
                       control={orderForm.control}
                       name="gallons"
-                      rules={{
-                        required: "Gallons is required",
-                        validate: (value) => {
-                          const num = parseInt(value, 10)
-                          if (isNaN(num)) return "Must be a valid number"
-                          if (num < 1) return "Gallons must be at least 1"
-                          if (!Number.isInteger(num)) return "Must be a whole number"
-                          return true
-                        },
-                      }}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Order Quantity (Gallons)</FormLabel>

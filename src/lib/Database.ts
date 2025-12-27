@@ -45,7 +45,7 @@ class WatermartDatabase extends Dexie {
 export const db = new WatermartDatabase()
 
 export const databaseService = {
-
+  
   async getAllCustomers() {
     return await db.customers.toArray()
   },
