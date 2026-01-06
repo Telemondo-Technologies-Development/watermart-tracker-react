@@ -20,7 +20,6 @@ interface TopCustomerData {
   customer: string
   gallons: number
   fill: string
-  // Add index signature for recharts compatibility
   [key: string]: string | number
 }
 
@@ -43,16 +42,16 @@ export function TopCustomersChart({ timeRange }: TopCustomersChartProps) {
       try {
         const range = getDateRange(timeRange)
         
-        // Get orders within the time range
+        // get orders within the time range
         const orders = await db.orders
           .where('date')
           .between(range.start, range.end)
           .toArray()
 
-        // Get all customers
+        // get all customers
         const customers = await db.customers.toArray()
         
-        // Calculate gallons per customer
+        // calculate gallons per customer
         const customerGallons: { [key: string]: { name: string; gallons: number } } = {}
         
         orders.forEach(order => {
@@ -67,7 +66,7 @@ export function TopCustomersChart({ timeRange }: TopCustomersChartProps) {
           customerGallons[customerId].gallons += order.gallons
         })
 
-        // Convert to array, sort by gallons, and take top 5
+        // convert to array, sort by gallons, and take top 5
         const topCustomers = Object.values(customerGallons)
           .sort((a, b) => b.gallons - a.gallons)
           .slice(0, 5)
@@ -80,12 +79,11 @@ export function TopCustomersChart({ timeRange }: TopCustomersChartProps) {
         setTopCustomersData(topCustomers)
       } catch (error) {
         console.error('Failed to load top customers:', error)
-        // Add fallback test data
+        // fallback test data
         setTopCustomersData([
           { customer: "Jo Kitahara", gallons: 275, fill: "#3b82f6" },
           { customer: "Jane Doe", gallons: 200, fill: "#06b6d4" },
           { customer: "John Smith", gallons: 187, fill: "#10b981" },
-          { customer: "Watermart Corp", gallons: 173, fill: "#8b5cf6" },
           { customer: "Aqua Supplies", gallons: 90, fill: "#6366f1" },
         ])
       } finally {
@@ -169,7 +167,6 @@ export function TopCustomersChart({ timeRange }: TopCustomersChartProps) {
                 cy="50%"
                 outerRadius={100}
                 label={(entry) => {
-                  // Type assertion to access custom properties
                   const data = entry as unknown as { customer: string; gallons: number }
                   return `${data.customer}: ${data.gallons}`
                 }}

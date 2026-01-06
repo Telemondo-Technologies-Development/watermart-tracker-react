@@ -43,7 +43,7 @@ export function OrderDistributionChart({ timeRange }: OrderDistributionChartProp
         const now = new Date()
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         
-        // Get orders for the last 6 months
+        // orders from the last 6 months
         const sixMonthsAgo = new Date()
         sixMonthsAgo.setMonth(now.getMonth() - 5)
         sixMonthsAgo.setDate(1)
@@ -54,7 +54,7 @@ export function OrderDistributionChart({ timeRange }: OrderDistributionChartProp
           .aboveOrEqual(sixMonthsAgo)
           .toArray()
 
-        // Group by month
+        // group by month
         const monthlyData: { [key: string]: number } = {}
         
         orders.forEach(order => {
@@ -67,7 +67,7 @@ export function OrderDistributionChart({ timeRange }: OrderDistributionChartProp
           monthlyData[monthName] += 1
         })
 
-        // Convert to array and sort - ensure we have all 6 months
+        // convert to array and sort, make sure to get last 6 months
         const dataArray = Object.entries(monthlyData)
           .map(([month, orders]) => ({ month, orders }))
           .sort((a, b) => {
@@ -77,9 +77,9 @@ export function OrderDistributionChart({ timeRange }: OrderDistributionChartProp
             return monthOrder.indexOf(aMonth) - monthOrder.indexOf(bMonth)
           })
 
-        // If we have less than 6 months of data, fill with zeros
+        // if less than 6 months of data, fill with zeros
         if (dataArray.length < 6) {
-          // Create last 6 months array
+          // create last 6 months array
           const lastSixMonths: DistributionData[] = []
           for (let i = 5; i >= 0; i--) {
             const date = new Date(now.getFullYear(), now.getMonth() - i, 1)
@@ -93,7 +93,7 @@ export function OrderDistributionChart({ timeRange }: OrderDistributionChartProp
           setDistributionData(dataArray.slice(-6)) // Take only last 6 months
         }
 
-        // Calculate trend percentage
+        // trend percentage calculation
         if (dataArray.length >= 2) {
           const current = dataArray[dataArray.length - 1].orders
           const previous = dataArray[dataArray.length - 2].orders
@@ -102,7 +102,7 @@ export function OrderDistributionChart({ timeRange }: OrderDistributionChartProp
         }
       } catch (error) {
         console.error('Failed to load distribution data:', error)
-        // Fallback test data
+        // fallback test data
         setDistributionData([
           { month: "Jan 2024", orders: 186 },
           { month: "Feb 2024", orders: 305 },
