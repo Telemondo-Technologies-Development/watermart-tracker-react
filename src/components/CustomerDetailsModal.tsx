@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import type { Customer } from "../types"
 import { X, Edit } from 'lucide-react'
