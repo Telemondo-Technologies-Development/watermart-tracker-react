@@ -14,7 +14,11 @@ export function Sidebar({ isVisible, onClose }: SidebarProps) {
     localStorage.removeItem('isAuthenticated')
     localStorage.removeItem('username')
     onClose()
-    navigate({ to: '/login' })
+    // providing the required search parameter
+    navigate({ 
+      to: '/login',
+      search: { redirect: '/' }
+    })
   }
 
   const username = localStorage.getItem('username') || 'Admin'
@@ -75,10 +79,10 @@ export function Sidebar({ isVisible, onClose }: SidebarProps) {
         <div className="p-4 border-t border-gray/30">
           <Button
             variant="destructive"
-            className="w-full"
-            leftIcon={<LogOut className="w-4 h-4" />}
+            className="w-full flex items-center justify-center gap-2"
             onClick={handleLogout}
           >
+            <LogOut className="w-4 h-4" />
             Logout
           </Button>
         </div>
