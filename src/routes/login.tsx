@@ -25,11 +25,15 @@ type LoginFormValues = z.infer<typeof loginSchema>
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: (search.redirect as string) || '/',
+  }),
 })
 
 function LoginPage() {
   const navigate = useNavigate()
   const [error, setError] = useState<string | null>(null)
+  const { redirect } = Route.useSearch()
   
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -46,8 +50,14 @@ function LoginPage() {
       localStorage.setItem('isAuthenticated', 'true')
       localStorage.setItem('username', values.username)
       
-      // Navigate to home
-      navigate({ to: '/' })
+      // Clear any errors
+      setError(null)
+      
+      // Navigate to home or the intended redirect URL
+      navigate({ 
+        to: redirect,
+        replace: true // Replace in history so back button doesn't go to login
+      })
     } else {
       setError('Invalid username or password')
       form.setError('password', {
