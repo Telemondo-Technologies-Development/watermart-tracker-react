@@ -23,6 +23,8 @@ function HomePage() {
     error,
     addCustomer,
     addOrder,
+    updateOrder,
+    deleteOrder,
     updateCustomer,
     searchCustomers,
     getTodayTotal,
@@ -83,6 +85,22 @@ function HomePage() {
       await addOrder(selectedCustomer.id, gallons)
     } catch (err) {
       console.error("Failed to add order:", err)
+    }
+  }
+
+  const handleEditOrder = async (orderId: string, gallons: number, date: Date) => {
+    try {
+      await updateOrder(orderId, { gallons, date })
+    } catch (err) {
+      console.error("Failed to edit order:", err)
+    }
+  }
+
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      await deleteOrder(orderId)
+    } catch (err) {
+      console.error("Failed to delete order:", err)
     }
   }
 
@@ -193,6 +211,8 @@ function HomePage() {
           customer={selectedCustomer}
           onAddOrder={handleAddOrder}
           onEditCustomer={handleEditCustomer}
+          onEditOrder={handleEditOrder}
+          onDeleteOrder={handleDeleteOrder}
           onClose={() => {
             setShowDetailsModal(false)
             setSelectedCustomer(null)

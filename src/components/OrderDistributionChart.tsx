@@ -32,7 +32,7 @@ export function OrderDistributionChart({ timeRange }: OrderDistributionChartProp
   const chartConfig = {
     orders: {
       label: "Orders",
-      color: "#06b6d4",
+      color: "#00a896",
     },
   }
 
@@ -174,7 +174,7 @@ export function OrderDistributionChart({ timeRange }: OrderDistributionChartProp
                 axisLine={false}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar dataKey="orders" fill="#06b6d4" radius={4} />
+              <Bar dataKey="orders" fill="#00a896" radius={4} />
             </BarChart>
           </ResponsiveContainer>
         </ChartContainer>

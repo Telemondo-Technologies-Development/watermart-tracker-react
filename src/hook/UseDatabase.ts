@@ -12,6 +12,7 @@ export function useDatabase() {
     const orders = await databaseService.getCustomerOrders(dbCustomer.id)
     const appOrders: Order[] = orders.map(order => ({
       id: order.id,
+      customerId: order.customerId,
       gallons: order.gallons,
       date: order.date
     }))
@@ -97,6 +98,28 @@ export function useDatabase() {
     }
   }
 
+  // Update order
+  const updateOrder = async (orderId: string, updates: { gallons?: number; date?: Date }) => {
+    try {
+      await databaseService.updateOrder(orderId, updates)
+      await loadCustomers()
+    } catch (err) {
+      console.error('Failed to update order:', err)
+      throw err
+    }
+  }
+
+  // Delete order
+  const deleteOrder = async (orderId: string) => {
+    try {
+      await databaseService.deleteOrder(orderId)
+      await loadCustomers()
+    } catch (err) {
+      console.error('Failed to delete order:', err)
+      throw err
+    }
+  }
+
   // Update customer information
   const updateCustomer = async (customerId: string, updates: { name?: string; address?: string }) => {
     try {
@@ -155,6 +178,8 @@ export function useDatabase() {
     error,
     addCustomer,
     addOrder,
+    updateOrder,
+    deleteOrder,
     updateCustomer,
     deleteCustomer,
     searchCustomers,

@@ -23,7 +23,7 @@ interface TopCustomerData {
   [key: string]: string | number
 }
 
-const COLORS = ["#3b82f6", "#06b6d4", "#10b981", "#8b5cf6", "#6366f1", "#ec4899", "#f59e0b", "#ef4444"]
+const COLORS = ["#00658d", "#00a896", "#51c1fd", "#3f6279", "#82cfff", "#6efcdf", "#c0e4ff", "#ba1a1a"]
 
 export function TopCustomersChart({ timeRange }: TopCustomersChartProps) {
   const [topCustomersData, setTopCustomersData] = useState<TopCustomerData[]>([])
@@ -32,7 +32,7 @@ export function TopCustomersChart({ timeRange }: TopCustomersChartProps) {
   const chartConfig = {
     gallons: {
       label: "Gallons",
-      color: "#3b82f6",
+      color: "#00658d",
     },
   }
 

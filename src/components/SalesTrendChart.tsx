@@ -31,7 +31,7 @@ export function SalesTrendChart({ timeRange }: SalesTrendChartProps) {
   const chartConfig = {
     gallons: {
       label: "Gallons",
-      color: "#3b82f6",
+      color: "#00658d",
     },
   }
 
@@ -132,9 +132,9 @@ export function SalesTrendChart({ timeRange }: SalesTrendChartProps) {
                 <Line
                   type="monotone"
                   dataKey="gallons"
-                  stroke="#3b82f6"
+                  stroke="#00658d"
                   strokeWidth={2}
-                  dot={{ fill: "#3b82f6", r: 4 }}
+                  dot={{ fill: "#00658d", r: 4 }}
                   activeDot={{ r: 6 }}
                 />
               </LineChart>
