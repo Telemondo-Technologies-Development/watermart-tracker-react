@@ -1,5 +1,3 @@
-import React from "react"
-
 export const WaterDropIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg 
     className={className} 

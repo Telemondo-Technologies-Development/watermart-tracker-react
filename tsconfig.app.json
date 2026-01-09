@@ -24,12 +24,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    /* Path Aliases - Add ignoreDeprecations to suppress warning */
+    /* Path aliases */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "ignoreDeprecations": "6.0"
   },
-  "include": ["src", "tailwind.config.js"]
+},
+ "include": ["src", "tailwind.config.js"]
 }

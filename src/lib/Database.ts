@@ -82,13 +82,16 @@ export const databaseService = {
   },
   
   async deleteCustomer(id: string) {
-
     await db.orders.where('customerId').equals(id).delete()
     await db.customers.delete(id)
   },
   
   async getCustomerOrders(customerId: string) {
     return await db.orders.where('customerId').equals(customerId).toArray()
+  },
+  
+  async getOrder(id: string) {
+    return await db.orders.get(id)
   },
   
   async addOrder(order: Omit<Order, 'id' | 'createdAt'>) {
@@ -100,6 +103,23 @@ export const databaseService = {
     }
     await db.orders.add(newOrder)
     return newOrder
+  },
+  
+  async updateOrder(id: string, updates: { gallons?: number; date?: Date }) {
+    const order = await db.orders.get(id)
+    if (order) {
+      const updatedOrder = {
+        ...order,
+        ...updates
+      }
+      await db.orders.update(id, updatedOrder)
+      return updatedOrder
+    }
+    return null
+  },
+  
+  async deleteOrder(id: string) {
+    await db.orders.delete(id)
   },
   
   async getDailyTotal() {

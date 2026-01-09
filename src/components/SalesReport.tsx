@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button"
 import { BarChart3, TrendingUp, Users, Package, MenuIcon } from "lucide-react"
 import { Sidebar } from "@/components/Sidebar"
 import { useAnalytics } from "@/hook/UseAnalytics"
+import { SalesTrendChart } from "@/components/SalesTrendChart"
+import { TopCustomersChart } from "@/components/TopCustomersChart"
+import { OrderDistributionChart } from "@/components/OrderDistributionChart"
 
 type TimeRange = "7days" | "30days" | "thisMonth" | "lastMonth"
 
@@ -27,8 +30,9 @@ export function SalesReport() {
             className="text-white hover:bg-white/10 text-2xl mr-6"
             onClick={() => setShowSidebar(!showSidebar)}
             aria-label="Toggle menu"
-            leftIcon={<MenuIcon className="w-6 h-6" />}
-          />
+          >
+            <MenuIcon className="w-6 h-6" />
+          </Button>
           <div className="flex-1 flex flex-col items-end">
             <h1 className="text-2xl font-bold tracking-tight">Sales Report</h1>
             <p className="text-sm text-white/80 mt-1">Analytics & Performance Overview</p>
@@ -40,7 +44,7 @@ export function SalesReport() {
           <div className="max-w-7xl mx-auto">
             
             {/* Time Range Filter */}
-            <div className="mb-8 mt-8 flex gap-3 justify-end">
+            <div className="mb-8 mt-8 flex gap-3 justify-end flex-wrap">
               <Button
                 variant={timeRange === "7days" ? "water" : "secondary"}
                 onClick={() => setTimeRange("7days")}
@@ -151,52 +155,16 @@ export function SalesReport() {
                   </Card>
                 </div>
 
-                {/* Charts Section - Placeholders for now */}
+                {/* Charts Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Sales Trend Chart */}
-                  <Card className="lg:col-span-2">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-primary-blue" />
-                        Sales Trend
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-64 flex items-center justify-center bg-light-blue/20 rounded-lg border-2 border-dashed border-gray">
-                        <p className="text-dark-gray">Chart will go here (Recharts)</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <SalesTrendChart timeRange={timeRange} />
 
                   {/* Top Customers */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Users className="w-5 h-5 text-primary-blue" />
-                        Top Customers
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-64 flex items-center justify-center bg-light-blue/20 rounded-lg border-2 border-dashed border-gray">
-                        <p className="text-dark-gray">Top customers list/chart</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <TopCustomersChart timeRange={timeRange} />
 
                   {/* Order Distribution */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <BarChart3 className="w-5 h-5 text-accent-cyan" />
-                        Order Distribution
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-64 flex items-center justify-center bg-light-blue/20 rounded-lg border-2 border-dashed border-gray">
-                        <p className="text-dark-gray">Distribution chart</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <OrderDistributionChart timeRange={timeRange} />
                 </div>
               </>
             )}
